@@ -1,17 +1,41 @@
 {
   "name": "fluent-pivot",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "scripts": {
     "ng": "ng",
+    "package": "ng-packagr -p package.json",
+    "publish": "publish dist",
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
-  "private": true,
+  "private": false,
+  "ngPackage": {
+    "assets": ["src/styles"],
+    "lib": {
+      "entryFile": "src/app/pivot/index.ts"}
+  ,
+    "dest": "dist",
+    "whitelistedNonPeerDependencies": [
+      "@angular/animations",
+      "@angular/common",
+      "@angular/compiler",
+      "@angular/core",
+      "@angular/cdk",
+      "@angular/forms",
+      "@angular/platform-browser",
+      "@angular/platform-browser-dynamic",
+      "@angular/router",
+      "rxjs",
+      "tslib",
+      "zone.js",
+      "node-sass"
+    ]},
   "dependencies": {
     "@angular/animations": "~9.0.1",
+    "@angular/cdk": "^10.2.1",
     "@angular/common": "~9.0.1",
     "@angular/compiler": "~9.0.1",
     "@angular/core": "~9.0.1",
@@ -28,9 +52,9 @@
     "@angular/cli": "~9.0.2",
     "@angular/compiler-cli": "~9.0.1",
     "@angular/language-service": "~9.0.1",
-    "@types/node": "^12.11.1",
     "@types/jasmine": "~3.5.0",
     "@types/jasminewd2": "~2.0.3",
+    "@types/node": "^12.11.1",
     "codelyzer": "^5.1.2",
     "jasmine-core": "~3.5.0",
     "jasmine-spec-reporter": "~4.2.1",
@@ -39,6 +63,7 @@
     "karma-coverage-istanbul-reporter": "~2.1.0",
     "karma-jasmine": "~2.0.1",
     "karma-jasmine-html-reporter": "^1.4.2",
+    "ng-packagr": "^10.1.2",
     "protractor": "~5.4.3",
     "ts-node": "~8.3.0",
     "tslint": "~5.18.0",

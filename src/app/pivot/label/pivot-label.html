@@ -1,0 +1,7 @@
+<span class="ms-pivotLabel-layout" #pivotLabelLayout>
+  <i *ngIf="icon" class="ms-pivotLabel-icon ms-Icon ms-Icon--{{icon}}"></i>
+  <span #msPivotLabelContent class="ms-pivotLabel-content">
+       <ng-content></ng-content>
+  </span>
+  <i *ngIf="secondaryIcon" class="ms-pivotLabel-icon ms-Icon ms-Icon--{{secondaryIcon}}"></i>
+</span>

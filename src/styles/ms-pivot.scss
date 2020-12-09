@@ -1,0 +1,110 @@
+$ms-pivot-activeColor: #008272 !default;
+
+$ms-pivot-labelHoverBackgroundColor: #f3f2f1;
+$ms-pivot-labelFontColor: #605e5c;
+
+$ms-pivot-labelFontSize: 12px;
+$ms-pivot-labelHeight: 36px;
+
+$ms-pivot-iconFontSize: 14px;
+
+$ms-pivot-borderHeight: 3px;
+$ms-pivot-headerBorderColor: #f3f2f1;
+
+
+.ms-pivot {
+  display: block;
+}
+
+.ms-pivotHeader {
+  display: block;
+  border-bottom: 1px solid $ms-pivot-headerBorderColor;
+  position: relative;
+}
+
+.ms-pivotActiveBorder {
+  display: inline-block;
+  height: $ms-pivot-borderHeight;
+  background: $ms-pivot-activeColor;
+  pointer-events: none;
+
+  position: absolute;
+  bottom: 0;
+}
+
+.ms-pivotLabel {
+  font-family: "Segoe UI", sans-serif;
+  font-size: $ms-pivot-labelFontSize;
+  font-weight: 500;
+  color: $ms-pivot-labelFontColor;
+
+  position: relative;
+  vertical-align: top;
+
+  padding: 16px 10px;
+  height: $ms-pivot-labelHeight;
+  display: inline-block;
+
+
+  cursor: pointer;
+  user-select: none;
+  outline: transparent;
+
+  background-color: transparent;
+  box-sizing: border-box;
+  transition: background-color 200ms;
+
+  &:hover {
+    background-color: $ms-pivot-labelHoverBackgroundColor;
+  }
+
+  &.ms-active {
+    color: $ms-pivot-activeColor;
+  }
+
+  &:focus {
+    outline: 1px dashed $ms-pivot-labelFontColor;
+  }
+
+  &:disabled, &[disabled], &.ms-disabled {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+}
+
+.ms-pivotLabel-layout {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 0;
+}
+
+.ms-pivotLabel-icon {
+  font-size: $ms-pivot-iconFontSize;
+  text-align: center;
+  margin-right: 5px;
+}
+
+.ms-pivotBody {
+  // border: 1px solid cyan;
+  display: block;
+  width: 100%;
+  overflow: hidden;
+
+}
+
+.ms-pivotBody-layout {
+  display: flex;
+  // border: 1px solid darkmagenta;
+}
+
+.ms-pivotContent-container {
+  width: 100%;
+  overflow: auto;
+}
+
+.ms-pivotContent {
+  display: block;
+  // border: 1px solid red;
+  padding: 10px;
+}
