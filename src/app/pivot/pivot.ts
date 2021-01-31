@@ -103,7 +103,7 @@ export class MsPivot implements AfterViewInit, AfterContentInit {
     const content = this.contents[index];
     const container = this.body.containers.toArray()[index];
 
-    this.header.activeBorder.move(label).then();
+    this.header.selectLabel(label).then();
 
     this.labels.forEach(item => {
       item._isActive = false;
@@ -115,9 +115,23 @@ export class MsPivot implements AfterViewInit, AfterContentInit {
     this._selectedIndex = index;
     this._selectedLabel = label;
 
+    const injector: Injector = this._createInjector(index, content);
+
+    if (this._selectedLabel._contentRef) {
+      // this._selectedContentRef.destroy();
+    } else {
+      const componentFactory = this.componentFactoryResolver.resolveComponentFactory(MsPivotContent);
+      this._selectedLabel._contentRef = container.createComponent<MsPivotContent>(componentFactory, 0, injector);
+      this._selectedLabel._contentRef.changeDetectorRef.detectChanges();
+    }
+
+    this.body.moveAt(index);
+  }
+
+  private _createInjector(index: number, content: MsPivotContentDef): Injector {
     const context = new MsPivotContentContext(index, this.body.contents.length);
     const parentInjector = this.parentInjector;
-    const injector: Injector = {
+    return {
       get(token: any, notFoundValue?: any): any {
         const customTokens = new WeakMap<any, any>([
           [MsPivotContentContext, context],
@@ -133,16 +147,6 @@ export class MsPivot implements AfterViewInit, AfterContentInit {
       }
 
     };
-
-    if (this._selectedLabel._contentRef) {
-      // this._selectedContentRef.destroy();
-    } else {
-      const componentFactory = this.componentFactoryResolver.resolveComponentFactory(MsPivotContent);
-      this._selectedLabel._contentRef = container.createComponent<MsPivotContent>(componentFactory, 0, injector);
-      this._selectedLabel._contentRef.changeDetectorRef.detectChanges();
-    }
-
-    this.body.moveAt(index);
   }
 
   select(label: MsPivotLabel) {
@@ -154,8 +158,8 @@ export class MsPivot implements AfterViewInit, AfterContentInit {
     if (!label.isActive) {
       return;
     }
-    this.header.activeBorder.move(label).then();
 
+    this.header.selectLabel(label).then();
   }
 
 

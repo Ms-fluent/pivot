@@ -35,12 +35,27 @@ export class MsPivotHeader {
   labels: QueryList<MsPivotLabel>;
 
   @ViewChild(MsPivotActiveBorder)
-  activeBorder: MsPivotActiveBorder;
+  private activeBorder: MsPivotActiveBorder;
 
   @ViewChild('layout')
   private _layout: ElementRef<HTMLDivElement>;
 
+  async selectLabel(label: MsPivotLabel): Promise<void> {
+    await this.activeBorder.move(label).then();
+    const labelRect = label.host.getBoundingClientRect();
+    const layoutRect = this.layoutHost.getBoundingClientRect();
+    if (labelRect.right > layoutRect.right) {
+      const scrollLeft = (labelRect.right - layoutRect.right);
+      this.layoutHost.scrollBy({left: scrollLeft, behavior: 'smooth'});
+    } else if (labelRect.left < layoutRect.left) {
+      const scrollRight = (labelRect.left - layoutRect.left);
+      this.layoutHost.scrollBy({left: scrollRight, behavior: 'smooth'});
+    }
+    return Promise.resolve();
+  }
+
   onLayoutScroll(event: Event) {
+    console.log('scrool');
     this.layoutScroll.emit(event);
     this.activeBorder.update();
   }
