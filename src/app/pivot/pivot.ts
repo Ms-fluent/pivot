@@ -10,7 +10,7 @@ import {
   Optional,
   ViewEncapsulation
 } from '@angular/core';
-import {MsPivotHeader} from './pivot-header';
+import {MsPivotHeader} from './header/pivot-header';
 import {MsPivotBody} from './pivot-body';
 import {MsPivotLabel} from './label/pivot-label';
 import {MsPivotContent, MsPivotContentDef} from './pivot-content';
@@ -42,13 +42,13 @@ export class MsPivot implements AfterViewInit, AfterContentInit {
 
   set selectedIndex(index: number) {
     if (this._isInitialized) {
-      this.activeAt(index);
+      this.activeAt(index).then();
     } else {
       this._selectedIndex = index;
     }
   }
 
-  private _selectedIndex: number | null = 0;
+  private _selectedIndex: number | null = null;
   private _selectedLabel: MsPivotLabel = null;
 
   @ContentChild(MsPivotHeader)
@@ -79,11 +79,16 @@ export class MsPivot implements AfterViewInit, AfterContentInit {
     this.labels.forEach(label => label.click.subscribe(() => this.select(label)));
     this.labels.forEach(label => label.mouseover.subscribe(() => this.labelHoverEvent(label)));
 
-    Promise.resolve().then(() => this.activeAt(this._selectedIndex));
+    Promise.resolve().then(() => {
+      this.activeAt(this._selectedIndex != null ? this._selectedIndex : 0);
+    });
     this._isInitialized = true;
   }
 
   activeAt(index: number) {
+    if (this._selectedIndex === index) {
+      return Promise.resolve();
+    }
     if (index < 0) {
       index = 0;
     } else if (index >= this.header.labels.length) {
@@ -94,18 +99,7 @@ export class MsPivot implements AfterViewInit, AfterContentInit {
     const content = this.contents[index];
     const container = this.body.containers.toArray()[index];
 
-    let left = 0;
-    let width = 0;
-
-    if (label.isHover) {
-      left = label.host.offsetLeft;
-      width = label.host.offsetWidth;
-    } else {
-      left = label.host.offsetLeft + label.labelLayout.nativeElement.offsetLeft;
-      width = label.labelLayout.nativeElement.offsetWidth;
-    }
-
-    this._moveActiveBorder(left, width);
+    this.header.activeBorder.move(label).then();
 
     this.labels.forEach(item => {
       item._isActive = false;
@@ -156,18 +150,7 @@ export class MsPivot implements AfterViewInit, AfterContentInit {
     if (!label.isActive) {
       return;
     }
-
-    let left = 0;
-    let width = 0;
-    if (label.isHover) {
-      left = label.host.offsetLeft;
-      width = label.host.offsetWidth;
-    } else {
-      left = label.host.offsetLeft + label.labelLayout.nativeElement.offsetLeft;
-      width = label.labelLayout.nativeElement.offsetWidth;
-    }
-
-    this._moveActiveBorder(left, width);
+    this.header.activeBorder.move(label).then();
 
   }
 
@@ -177,17 +160,6 @@ export class MsPivot implements AfterViewInit, AfterContentInit {
   selectNext() {
   }
 
-  private _moveActiveBorder(left: number, width: number): Promise<void> {
-    return new Promise<void>(resolve => {
-      this.activeBorderHost.animate([
-        {width: `${this.activeBorderHost.offsetWidth}px`, left: `${this.activeBorderHost.offsetLeft}px`},
-        {width: `${width}px`, left: `${left}px`}
-      ], {fill: 'both', duration: this._animationDuration})
-        .onfinish = () => resolve();
-    });
-  }
-
-
   get labels(): Array<MsPivotLabel> {
     return this.header.labels.toArray();
   }
@@ -195,9 +167,5 @@ export class MsPivot implements AfterViewInit, AfterContentInit {
 
   get contents(): Array<MsPivotContentDef> {
     return this.body.contents.toArray();
-  }
-
-  get activeBorderHost(): HTMLElement {
-    return this.header.activeBorder.nativeElement;
   }
 }

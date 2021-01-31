@@ -5,7 +5,7 @@ import {
   ContentChildren,
   ElementRef,
   EventEmitter,
-  forwardRef,
+  forwardRef, HostListener,
   Output,
   QueryList,
   ViewChild,
@@ -13,7 +13,6 @@ import {
   ViewContainerRef
 } from '@angular/core';
 import {MsPivotContentDef} from './pivot-content';
-import {ActivatedRoute} from '@angular/router';
 
 @Component({
   templateUrl: 'pivot-body.html',
@@ -45,16 +44,17 @@ export class MsPivotBody implements AfterContentInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-     this.flexLayout.nativeElement.style.width = `${this.width * this.containers.length}px`;
+    this.flexLayout.nativeElement.style.width = `${this.width * this.containers.length}px`;
   }
 
   private _left: number = 0;
+
   moveAt(index: number, duration: number = 200) {
-    const position =  -this.width * index;
+    const position = -this.width * index;
     this.flexLayout.nativeElement.animate([
-      {transform: `translateX(${this._left}px)`},
-      {transform: `translateX(${position}px)`},
-    ], {fill: 'both', easing: 'ease-in-out', duration });
+      {transform: `translateX(${this._left}px)`, opacity: 0},
+      {transform: `translateX(${position}px)`, opacity: 1},
+    ], {fill: 'both', easing: 'ease-in-out', duration});
     this._left = position;
   }
 
@@ -64,5 +64,10 @@ export class MsPivotBody implements AfterContentInit, AfterViewInit {
 
   get host(): HTMLElement {
     return this._elementRef.nativeElement;
+  }
+
+  @HostListener('swipeleft')
+  onswipeleft() {
+    console.log('swipeleft')
   }
 }

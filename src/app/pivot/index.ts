@@ -4,4 +4,5 @@ export * from './pivot';
 export * from './pivot-body';
 export * from './pivot-content';
 export * from './pivot-content-context';
-export * from './pivot-header';
+export * from './header/pivot-header';
+export * from './pivot-active-border';

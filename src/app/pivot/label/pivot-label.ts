@@ -94,22 +94,18 @@ export class MsPivotLabel {
 
   @HostListener('click', ['$event'])
   clickEventListener(event: MouseEvent) {
+    event.preventDefault();
     this.click.emit(event);
   }
 
   @HostListener('mouseenter', ['$event'])
   mouseEnterEventListener(event: MouseEvent) {
-    this._isHover = true;
-    this.mouseenter.emit(event);
-    this.mouseover.emit(event);
-  }
-
-  @HostListener('mouseout', ['$event'])
-  mouseOutEventListener(event: MouseEvent) {
-    if (!this.host.contains(event.relatedTarget as Node)) {
-      this._isHover = false;
-      this.mouseout.emit(event);
+    if (!this.isMobile) {
+      this._isHover = true;
+      this.mouseenter.emit(event);
       this.mouseover.emit(event);
+    } else {
+      console.log('Is touch event');
     }
   }
 
@@ -117,7 +113,15 @@ export class MsPivotLabel {
     return this._elementRef.nativeElement;
   }
 
+  get layoutHost(): HTMLElement {
+    return this.labelLayout.nativeElement;
+  }
+
   markForCheck() {
     this._changeDetectorRef.markForCheck();
+  }
+
+  get isMobile() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
   }
 }
