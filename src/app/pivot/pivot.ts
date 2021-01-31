@@ -85,6 +85,10 @@ export class MsPivot implements AfterViewInit, AfterContentInit {
     this._isInitialized = true;
   }
 
+  selectIndex(index: number) {
+    return this.activeAt(index);
+  }
+
   activeAt(index: number) {
     if (this._selectedIndex === index) {
       return Promise.resolve();
@@ -154,10 +158,28 @@ export class MsPivot implements AfterViewInit, AfterContentInit {
 
   }
 
-  selectPrev() {
+
+  selectNext(): Promise<void> {
+    if (this.hasNext()) {
+      return this.selectIndex(this.selectedIndex + 1);
+    }
+    return Promise.resolve();
   }
 
-  selectNext() {
+  selectPrev(): Promise<void> {
+    if (this.hasPrev()) {
+      return this.selectIndex(this._selectedIndex - 1);
+    }
+    return Promise.resolve();
+  }
+
+
+  hasNext(): boolean {
+    return this._selectedIndex < this.length() - 1;
+  }
+
+  hasPrev(): boolean {
+    return this.selectedIndex > 0;
   }
 
   get labels(): Array<MsPivotLabel> {
@@ -167,5 +189,9 @@ export class MsPivot implements AfterViewInit, AfterContentInit {
 
   get contents(): Array<MsPivotContentDef> {
     return this.body.contents.toArray();
+  }
+
+  length(): number {
+    return this.header.labels.length;
   }
 }

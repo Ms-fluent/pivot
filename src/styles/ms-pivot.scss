@@ -14,6 +14,7 @@ $ms-pivot-headerBorderColor: #f3f2f1;
 
 .ms-pivot {
   display: block;
+  touch-action: pan-y !important;
 }
 
 .ms-pivotHeader {
@@ -100,7 +101,6 @@ $ms-pivot-headerBorderColor: #f3f2f1;
   display: block;
   width: 100%;
   overflow: hidden;
-
 }
 
 .ms-pivotBody-layout {
@@ -111,6 +111,7 @@ $ms-pivot-headerBorderColor: #f3f2f1;
 .ms-pivotContent-container {
   width: 100%;
   overflow: auto;
+  touch-action: pan-y !important;
 }
 
 .ms-pivotContent {
