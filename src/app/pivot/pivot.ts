@@ -42,7 +42,7 @@ export class MsPivot implements AfterViewInit, AfterContentInit {
 
   set selectedIndex(index: number) {
     if (this._isInitialized) {
-      this.activeAt(index).then();
+      this.activeAt(index, false).then();
     } else {
       this._selectedIndex = index;
     }
@@ -76,20 +76,19 @@ export class MsPivot implements AfterViewInit, AfterContentInit {
 
 
     this.labels.forEach((label, index) => label._index = index);
-    this.labels.forEach(label => label.click.subscribe(() => this.select(label)));
-    this.labels.forEach(label => label.mouseover.subscribe(() => this.labelHoverEvent(label)));
+    this.labels.forEach(label => label.click.subscribe(() => this.select(label, true)));
 
     Promise.resolve().then(() => {
-      this.activeAt(this._selectedIndex != null ? this._selectedIndex : 0);
+      this.activeAt(this._selectedIndex != null ? this._selectedIndex : 0, false);
     });
     this._isInitialized = true;
   }
 
-  selectIndex(index: number) {
-    return this.activeAt(index);
+  selectIndex(index: number, clickEvent: boolean) {
+    return this.activeAt(index, clickEvent);
   }
 
-  activeAt(index: number) {
+  activeAt(index: number, clickEvent: boolean) {
     if (this._selectedIndex === index) {
       return Promise.resolve();
     }
@@ -103,7 +102,7 @@ export class MsPivot implements AfterViewInit, AfterContentInit {
     const content = this.contents[index];
     const container = this.body.containers.toArray()[index];
 
-    this.header.selectLabel(label).then();
+    this.header.selectLabel(label, clickEvent).then();
 
     this.labels.forEach(item => {
       item._isActive = false;
@@ -149,30 +148,21 @@ export class MsPivot implements AfterViewInit, AfterContentInit {
     };
   }
 
-  select(label: MsPivotLabel) {
+  select(label: MsPivotLabel, clickEvent: boolean) {
     const index = this.labels.indexOf(label);
-    this.activeAt(index);
+    this.activeAt(index, clickEvent);
   }
-
-  labelHoverEvent(label: MsPivotLabel) {
-    if (!label.isActive) {
-      return;
-    }
-
-    this.header.selectLabel(label).then();
-  }
-
 
   selectNext(): Promise<void> {
     if (this.hasNext()) {
-      return this.selectIndex(this.selectedIndex + 1);
+      return this.selectIndex(this.selectedIndex + 1, false);
     }
     return Promise.resolve();
   }
 
   selectPrev(): Promise<void> {
     if (this.hasPrev()) {
-      return this.selectIndex(this._selectedIndex - 1);
+      return this.selectIndex(this._selectedIndex - 1, false);
     }
     return Promise.resolve();
   }

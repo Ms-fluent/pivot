@@ -90,6 +90,7 @@ export class MsPivotLabel {
   _isActive: boolean = false;
 
   constructor(private _elementRef: ElementRef<HTMLElement>, private _changeDetectorRef: ChangeDetectorRef) {
+
   }
 
   @HostListener('click', ['$event'])
@@ -104,6 +105,16 @@ export class MsPivotLabel {
       this._isHover = true;
       this.mouseenter.emit(event);
       this.mouseover.emit(event);
+    } else {
+      console.log('Is touch event');
+    }
+  }
+
+  @HostListener('mouseleave', ['$event'])
+  mouseLeaveEventListener(event: MouseEvent) {
+    if (!this.isMobile) {
+      this._isHover = true;
+      this.mouseout.emit(event);
     } else {
       console.log('Is touch event');
     }

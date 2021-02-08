@@ -1,4 +1,5 @@
 import {
+  AfterContentInit,
   Component,
   ContentChildren,
   ElementRef,
@@ -20,7 +21,7 @@ import {MsPivotActiveBorder} from '../pivot-active-border';
     'attr.role': 'tablist'
   }
 })
-export class MsPivotHeader {
+export class MsPivotHeader implements AfterContentInit {
 
   @Output()
   indexFocused: EventEmitter<number>;
@@ -28,6 +29,7 @@ export class MsPivotHeader {
 
   @Output()
   selectFocusedIndex: EventEmitter<number>;
+
 
   layoutScroll = new EventEmitter<Event>();
 
@@ -40,24 +42,44 @@ export class MsPivotHeader {
   @ViewChild('layout')
   private _layout: ElementRef<HTMLDivElement>;
 
-  async selectLabel(label: MsPivotLabel): Promise<void> {
-    await this.activeBorder.move(label).then();
+  private _activateLabel: MsPivotLabel;
+
+  ngAfterContentInit(): void {
+    this.labels.forEach(label => {
+      label.mouseenter.subscribe(() => {
+          if (label.isActive) {
+            this.activeBorder.move(label, true);
+          }
+        }
+      );
+
+      label.mouseout.subscribe(() => {
+          if (label.isActive) {
+            this.activeBorder.move(label, false);
+          }
+        }
+      );
+    });
+  }
+
+  async selectLabel(label: MsPivotLabel, clickEvent: boolean): Promise<void> {
+    if (this._activateLabel) {
+      this._activateLabel._isActive = false;
+    }
+
+    this._activateLabel = label;
+    label._isActive = true;
+    this.activeBorder.move(label, clickEvent).then();
     const labelRect = label.host.getBoundingClientRect();
     const layoutRect = this.layoutHost.getBoundingClientRect();
     if (labelRect.right > layoutRect.right) {
-      const scrollLeft = (labelRect.right - layoutRect.right);
+      const scrollLeft = (labelRect.right - layoutRect.right) + 50;
       this.layoutHost.scrollBy({left: scrollLeft, behavior: 'smooth'});
     } else if (labelRect.left < layoutRect.left) {
-      const scrollRight = (labelRect.left - layoutRect.left);
+      const scrollRight = (labelRect.left - layoutRect.left) - 50;
       this.layoutHost.scrollBy({left: scrollRight, behavior: 'smooth'});
     }
     return Promise.resolve();
-  }
-
-  onLayoutScroll(event: Event) {
-    console.log('scrool');
-    this.layoutScroll.emit(event);
-    this.activeBorder.update();
   }
 
   get selectedIndex(): number {

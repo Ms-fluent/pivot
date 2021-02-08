@@ -18,10 +18,10 @@ export class MsPivotActiveBorder {
   constructor(private _elementRef: ElementRef<HTMLElement>, private _header: MsPivotHeader) {
   }
 
-  move(label: MsPivotLabel): Promise<void> {
+  move(label: MsPivotLabel, all: boolean = true): Promise<void> {
     this._label = label;
-    const translateX = this.getTranslateX(label);
-    const width = label.layoutHost.getBoundingClientRect().width;
+    const translateX = all ? label.host.offsetLeft : this.getTranslateX(label);
+    const width = all ? label.host.offsetWidth : label.layoutHost.offsetWidth;
 
     const keyframes = [
       {width: `${this._width}px`, transform: `translateX(${this._translateX}px)`},
@@ -40,13 +40,9 @@ export class MsPivotActiveBorder {
     });
   }
 
-  update() {
-    this._translateX = this.getTranslateX(this._label);
-    this.host.style.transform = `translateX(${this._translateX}px)`;
-  }
 
   getTranslateX(label: MsPivotLabel): number {
-    return label.layoutHost.getBoundingClientRect().left - this._header.layoutHost.getBoundingClientRect().left;
+    return label.host.offsetLeft + label.layoutHost.offsetLeft;
   }
 
   get host(): HTMLElement {
