@@ -1,6 +1,6 @@
 {
   "name": "@ms-fluent/pivot",
-  "version": "0.0.22",
+  "version": "0.0.24",
   "scripts": {
     "ng": "ng",
     "package": "ng-packagr -p package.json",
@@ -52,6 +52,7 @@
     "@types/hammerjs": "^2.0.38",
     "gulp-shell": "^0.8.0",
     "hammerjs": "^2.0.8",
+    "resize-observer-polyfill": "^1.5.1",
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",
     "zone.js": "~0.10.2"

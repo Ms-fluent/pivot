@@ -101,7 +101,7 @@ export class MsPivotLabel {
 
   @HostListener('mouseenter', ['$event'])
   mouseEnterEventListener(event: MouseEvent) {
-    if (!this.isMobile) {
+    if (1) {
       this._isHover = true;
       this.mouseenter.emit(event);
       this.mouseover.emit(event);
@@ -112,7 +112,7 @@ export class MsPivotLabel {
 
   @HostListener('mouseleave', ['$event'])
   mouseLeaveEventListener(event: MouseEvent) {
-    if (!this.isMobile) {
+    if (1) {
       this._isHover = true;
       this.mouseout.emit(event);
     } else {
